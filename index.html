@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>countries</title>
+    <style>
+        #country-list{
+            display: grid;
+            grid-template-columns: repeat(5 , 1fr);
+            grid-gap: 10px;
+        }
+        .country{
+            border: 1px solid tomato;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .btn{
+            color: white;
+            background-color: tomato;
+            border: none;
+            padding: 7px;
+            border-radius: 5px;
+        }
+        .country:hover{
+            background-color: tomato;
+            color: white;
+        }
+        .btn:hover{
+            background-color: yellow;
+            color: black;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Countries List and Details</h1>
+    </header>
+    <main>
+        <section>
+            <img src="" alt="" id="c-flag">
+        </section>
+        <section id="country-list">
+
+        </section>
+
+    </main>
+
+    <script>
+        function loadData(){
+            const url = 'https://restcountries.com/v3.1/all';
+            fetch(url)
+            .then(res=>res.json())
+            .then(data=>displayCountryList(data))
+            .catch(error=>console.log(error));
+        }
+
+        function displayCountryList (countries){
+            const countryList = document.getElementById('country-list');
+            countries.forEach(country=>{
+                const cName = country.name.common;
+                const cCapital = `${country.capital ? country.capital[0] : 'No capital'}`;
+                const cSname = country.cca2;
+                
+                const div = document.createElement('div');
+                div.classList.add('country');
+                div.innerHTML=`
+                <h4>Name: ${cName}</h4>
+                <h4>Capital: ${cCapital}</h4>
+                <button onclick="countryDetails('${cSname}')" class='btn'>See Flag</button>
+                `
+                countryList.appendChild(div);
+            })
+        }
+
+        function countryDetails(code){
+            const url= `https://restcountries.com/v3.1/alpha/${code}`
+            fetch(url)
+            .then(res=>res.json())
+            .then(data=>deatisCountry(data[0]));
+
+
+        }
+
+        function deatisCountry(details){
+            const cFlag = document.getElementById('c-flag');
+            cFlag.src=`${details.flags.png}`;
+        
+        }
+
+
+        loadData();
+    </script>
+    
+</body>
+</html>
